@@ -4,11 +4,6 @@
         "title": "FastAPI",
         "version": "0.1.0"
     },
-    "servers": [
-        {
-            "url": "/api"
-        }
-    ],
     "paths": {
         "/ping": {
             "get": {
@@ -20,7 +15,165 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/OKResponse"
+                                    "title": "Response Ping Ping Get",
+                                    "anyOf": [
+                                        {
+                                            "$ref": "#/components/schemas/OKResponse"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/ErrorResponse"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/ping-with-token": {
+            "get": {
+                "summary": "Ping With Token",
+                "operationId": "ping_with_token_ping_with_token_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "title": "Response Ping With Token Ping With Token Get",
+                                    "anyOf": [
+                                        {
+                                            "$ref": "#/components/schemas/OKResponse"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/ErrorResponse"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/signin": {
+            "post": {
+                "summary": "Signin",
+                "operationId": "signin_auth_signin_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "title": "Response Signin Auth Signin Post",
+                                    "anyOf": [
+                                        {
+                                            "$ref": "#/components/schemas/OKResponse"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/ErrorResponse"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/logout": {
+            "delete": {
+                "summary": "Logout",
+                "operationId": "logout_auth_logout_delete",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "title": "Response Logout Auth Logout Delete",
+                                    "anyOf": [
+                                        {
+                                            "$ref": "#/components/schemas/OKResponse"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/ErrorResponse"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/is_auth": {
+            "get": {
+                "summary": "Is Auth",
+                "operationId": "is_auth_auth_is_auth_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "title": "Response Is Auth Auth Is Auth Get",
+                                    "anyOf": [
+                                        {
+                                            "$ref": "#/components/schemas/OKResponse"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/ErrorResponse"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/resecure": {
+            "post": {
+                "summary": "Resecure",
+                "operationId": "resecure_auth_resecure_post",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "title": "Response Resecure Auth Resecure Post",
+                                    "anyOf": [
+                                        {
+                                            "$ref": "#/components/schemas/OKResponse"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/ErrorResponse"
+                                        }
+                                    ]
                                 }
                             }
                         }
@@ -31,11 +184,40 @@
     },
     "components": {
         "schemas": {
+            "ErrorResponse": {
+                "title": "ErrorResponse",
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/Status"
+                            }
+                        ],
+                        "default": "ERROR"
+                    },
+                    "message": {
+                        "title": "Message",
+                        "type": "string",
+                        "default": ""
+                    }
+                }
+            },
+            "HTTPValidationError": {
+                "title": "HTTPValidationError",
+                "type": "object",
+                "properties": {
+                    "detail": {
+                        "title": "Detail",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ValidationError"
+                        }
+                    }
+                }
+            },
             "OKResponse": {
                 "title": "OKResponse",
-                "required": [
-                    "message"
-                ],
                 "type": "object",
                 "properties": {
                     "status": {
@@ -48,7 +230,8 @@
                     },
                     "message": {
                         "title": "Message",
-                        "type": "string"
+                        "type": "string",
+                        "default": ""
                     }
                 }
             },
@@ -60,6 +243,57 @@
                 ],
                 "type": "string",
                 "description": "An enumeration."
+            },
+            "UserRequest": {
+                "title": "UserRequest",
+                "required": [
+                    "username",
+                    "password"
+                ],
+                "type": "object",
+                "properties": {
+                    "username": {
+                        "title": "Username",
+                        "type": "string"
+                    },
+                    "password": {
+                        "title": "Password",
+                        "type": "string"
+                    }
+                }
+            },
+            "ValidationError": {
+                "title": "ValidationError",
+                "required": [
+                    "loc",
+                    "msg",
+                    "type"
+                ],
+                "type": "object",
+                "properties": {
+                    "loc": {
+                        "title": "Location",
+                        "type": "array",
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
+                        }
+                    },
+                    "msg": {
+                        "title": "Message",
+                        "type": "string"
+                    },
+                    "type": {
+                        "title": "Error Type",
+                        "type": "string"
+                    }
+                }
             }
         }
     }
