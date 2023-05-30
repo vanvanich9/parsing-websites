@@ -3,3 +3,6 @@ from .base import (
     ErrorResponse,
     Status,
 )
+from .auth import (
+    UserRequest
+)

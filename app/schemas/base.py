@@ -9,7 +9,7 @@ class Status(str, Enum):
 
 class BaseResponse(BaseModel):
     status: Status
-    message: str
+    message: str = ""
 
 
 class OKResponse(BaseResponse):
