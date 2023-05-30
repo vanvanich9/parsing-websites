@@ -1,0 +1,66 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "FastAPI",
+        "version": "0.1.0"
+    },
+    "servers": [
+        {
+            "url": "/api"
+        }
+    ],
+    "paths": {
+        "/ping": {
+            "get": {
+                "summary": "Ping",
+                "operationId": "ping_ping_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OKResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "OKResponse": {
+                "title": "OKResponse",
+                "required": [
+                    "message"
+                ],
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/Status"
+                            }
+                        ],
+                        "default": "OK"
+                    },
+                    "message": {
+                        "title": "Message",
+                        "type": "string"
+                    }
+                }
+            },
+            "Status": {
+                "title": "Status",
+                "enum": [
+                    "OK",
+                    "ERROR"
+                ],
+                "type": "string",
+                "description": "An enumeration."
+            }
+        }
+    }
+}
