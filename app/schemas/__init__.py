@@ -4,5 +4,9 @@ from .base import (
     Status,
 )
 from .auth import (
-    UserRequest
+    UserRequest,
+)
+from .parsing import (
+    ParsingElement,
+    ParsingElementData,
 )
