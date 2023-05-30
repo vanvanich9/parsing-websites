@@ -173,3 +173,15 @@ def db_add_parsing_result(cursor, uuid, data: ParsingElementData):
     )
     result = cursor.fetchall()
     return result
+
+
+@use_database
+def db_delete_parsing_result(cursor, uuid, id):
+    cursor.execute(
+        '''
+        DELETE FROM history 
+        WHERE uuid = ? AND id = ?
+        ''', (uuid, id)
+    )
+    result = cursor.fetchall()
+    return result
