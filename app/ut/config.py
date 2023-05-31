@@ -8,7 +8,7 @@ TESTING_TOKEN = os.getenv("TESTING_TOKEN")
 
 
 class TestClient():
-    SERVER_URL = "http://0.0.0.0:4567"
+    SERVER_URL = os.getenv("SERVER_URL")
     
     def __init__(self):
         self.enable_testing_token()

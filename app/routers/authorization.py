@@ -9,6 +9,7 @@ from datetime import datetime, timedelta
 
 from ..schemas import (
     OKResponse,
+    ErrorCode,
     ErrorResponse,
     UserRequest,
 )
@@ -26,7 +27,7 @@ router = APIRouter()
 def signin(response: Response, user: UserRequest = Body()):
     user_uuid = users.get_user_uuid(user)
     if user_uuid is None:
-        return ErrorResponse(message="Invalid user login and/or password")
+        return ErrorResponse(message="Invalid user login and/or password", error_code=ErrorCode.NOT_FOUND)
 
     token = auth.secure({'user_uuid': user_uuid, 'exp': datetime.now() + timedelta(days=1)})
     response.set_cookie(key="access_token", value=token)

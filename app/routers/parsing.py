@@ -4,6 +4,7 @@ from fastapi import (
     Depends,
 )
 from ..schemas import (
+    ErrorCode,
     ErrorResponse,
     ParsingRequest,
     ParsingResponse,
@@ -53,9 +54,9 @@ def parse_html(uuid: str = Depends(auth.parse_uuid)):
 )
 def parse_html(id: int, uuid: str = Depends(auth.parse_uuid)):
     if id > db_methods.db_get_last_notice():
-        return ErrorResponse(message="This entry does not exist")
+        return ErrorResponse(message="This entry does not exist", error_code=ErrorCode.NOT_EXIST)
     result = db_methods.db_get_parsing_result(uuid, id)
     if not result:
-        return ErrorResponse(message="This entry does not belong to the user")
+        return ErrorResponse(message="This entry does not belong to the user", error_code=ErrorCode.NOT_OWNER)
     data = parsing.organize_from_db_data(result)
     return ParsingResponse(data=data, url=result[2])

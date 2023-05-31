@@ -1,5 +1,5 @@
 from datetime import datetime
-from fastapi import HTTPException, Request, Body, Header
+from fastapi import HTTPException, Request
 import jwt
 
 from .config import JWT_SECRET, JWT_ALGORITHM, TESTING_TOKEN

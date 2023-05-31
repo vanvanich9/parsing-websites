@@ -13,7 +13,7 @@ router = APIRouter()
 
 
 @router.get(
-    "/ping", 
+    "/api/ping", 
     response_model=OKResponse | ErrorResponse,
 )
 def ping():
@@ -21,7 +21,7 @@ def ping():
 
 
 @router.get(
-    "/ping-with-token", 
+    "/api/ping-with-token", 
     response_model=OKResponse | ErrorResponse,
     dependencies=[Depends(auth.auth)])
 def ping_with_token():
