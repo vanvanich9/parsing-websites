@@ -1,4 +1,8 @@
 from pydantic import BaseModel
+from .base import (
+    BaseResponse,
+    Status,
+)
 
 
 class ParsingElement(BaseModel):
@@ -7,4 +11,25 @@ class ParsingElement(BaseModel):
 
 
 class ParsingElementData(BaseModel):
-    elements: list[ParsingElement] 
+    elements: list[ParsingElement]
+
+
+class ParsingRequest(BaseModel):
+    url: str
+    save: bool = False
+
+
+class ParsingResponse(BaseResponse):
+    status: Status = Status.OK
+    url: str
+    data: ParsingElementData
+
+
+class ParsingHistory(BaseModel):
+    id: int
+    url: str
+
+
+class ParsingHistoryResponse(BaseResponse):
+    status: Status = Status.OK
+    data: list[ParsingHistory]

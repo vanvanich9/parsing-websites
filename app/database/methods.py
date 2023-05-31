@@ -106,7 +106,7 @@ def db_delete_user(cursor, username, password):
 def db_get_parsing_ids(cursor, uuid):
     cursor.execute(
         '''
-        SELECT id FROM history 
+        SELECT id, url FROM history 
         WHERE uuid = ?
         ''', (uuid,)
     )
@@ -118,61 +118,55 @@ def db_get_parsing_ids(cursor, uuid):
 def db_get_parsing_result(cursor, uuid, id):
     cursor.execute(
         '''
-        SELECT 
-        first_p, first_v, 
-        second_p, second_v, 
-        third_p, third_v, 
-        fourth_p, fourth_v,
-        fifth_p, fifth_v,
-        sixth_p, sixth_v, 
-        seventh_p, seventh_v,
-        eighth_p, eighth_v,
-        ninth_p, ninth_v,
-        tenth_p, tenth_v
-        FROM history 
+        SELECT * FROM history 
         WHERE uuid = ? AND id = ?
         ''', (uuid, id)
     )
-    result = cursor.fetchall()
+    result = cursor.fetchone()
     return result
 
 
 @use_database
-def db_add_parsing_result(cursor, uuid, data: ParsingElementData):
-    cursor.execute(
-        '''
-        INSERT INTO history (uuid, 
-        first_p, first_v, 
-        second_p, second_v, 
-        third_p, third_v, 
-        fourth_p, fourth_v,
-        fifth_p, fifth_v,
-        sixth_p, sixth_v, 
-        seventh_p, seventh_v,
-        eighth_p, eighth_v,
-        ninth_p, ninth_v,
-        tenth_p, tenth_v
-        ) 
-        VALUES (
-            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-            ?
-        )
-        ''', (uuid, 
-              data.elements[0].word, data.elements[0].value,
-              data.elements[1].word, data.elements[1].value,
-              data.elements[2].word, data.elements[2].value,
-              data.elements[3].word, data.elements[3].value,
-              data.elements[4].word, data.elements[4].value,
-              data.elements[5].word, data.elements[5].value,
-              data.elements[6].word, data.elements[6].value,
-              data.elements[7].word, data.elements[7].value,
-              data.elements[8].word, data.elements[8].value,
-              data.elements[9].word, data.elements[9].value,
+def db_add_parsing_result(cursor, uuid, data: ParsingElementData, url):
+    count_tries = 0
+    while count_tries < 5:
+        try:
+            cursor.execute(
+                '''
+                INSERT INTO history (
+                id, uuid, url,
+                first_p, first_v, 
+                second_p, second_v, 
+                third_p, third_v, 
+                fourth_p, fourth_v,
+                fifth_p, fifth_v,
+                sixth_p, sixth_v, 
+                seventh_p, seventh_v,
+                eighth_p, eighth_v,
+                ninth_p, ninth_v,
+                tenth_p, tenth_v
+                ) 
+                VALUES (
+                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                    ?, ?, ?
+                )
+                ''', (db_get_last_notice() + 1, uuid, url,
+                    data.elements[0].word, data.elements[0].value,
+                    data.elements[1].word, data.elements[1].value,
+                    data.elements[2].word, data.elements[2].value,
+                    data.elements[3].word, data.elements[3].value,
+                    data.elements[4].word, data.elements[4].value,
+                    data.elements[5].word, data.elements[5].value,
+                    data.elements[6].word, data.elements[6].value,
+                    data.elements[7].word, data.elements[7].value,
+                    data.elements[8].word, data.elements[8].value,
+                    data.elements[9].word, data.elements[9].value,
+                    )
             )
-    )
-    result = cursor.fetchall()
-    return result
+            return True
+        except:
+            return False
 
 
 @use_database
@@ -185,3 +179,17 @@ def db_delete_parsing_result(cursor, uuid, id):
     )
     result = cursor.fetchall()
     return result
+
+
+@use_database
+def db_get_last_notice(cursor):
+    cursor.execute(
+        '''
+        SELECT * FROM history 
+        '''
+    )
+    result = cursor.fetchall()
+    max_id = 0
+    for el in result:
+        max_id = max(el[0], max_id)
+    return max_id

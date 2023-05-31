@@ -45,3 +45,10 @@ def auth(request: Request):
 
 def _in_testing(access_token):
     return access_token == TESTING_TOKEN
+
+
+def parse_uuid(req: Request):
+    access_token = req.cookies.get("access_token")
+    if _in_testing(access_token):
+        return "test_user"
+    return access_token.get("user_uuid")
